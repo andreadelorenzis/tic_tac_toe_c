@@ -114,7 +114,9 @@ int cercaTripletta(int matrice[][3], int segnoGiocatore)
 	int ricercaOrizz = 0;
 	int ricercaVert = 0;
 	int ricercaObliq = 0;
+	
 	/*cercaOrizzontale: itero riga per riga*/
+	
 	for(int i = 0; i < 3; i++)
 	{
 		int conteggio = 0;
@@ -126,14 +128,52 @@ int cercaTripletta(int matrice[][3], int segnoGiocatore)
 		if(conteggio == 3)
 		{
 			ricercaOrizz = 1;
-			return 1;
 		}
 		else 
 			conteggio = 0;
 	}
 	
     /*cercaVerticale: itero colonna per colonna*/
-    /*cercaObliquo: itero 3 volte aumentando contemporaneamente riga e colonna*/
+	
+	for(int i = 0; i < 3; i++)
+	{
+		int conteggio = 0;
+		for(int j = 0; j < 3; j++)
+		{
+			if(matrice[j][i] == segnoGiocatore)
+				conteggio++;
+		}
+		if(conteggio == 3)
+		{
+			ricercaVert = 1;
+		}
+		else 
+			conteggio = 0;
+	}
+	
+    /*cercaObliquo: itero 3 volte aumentando contemporaneamente riga e colonna
+					itero 3 volte partendo da colonna = 3, riga = 0, e diminuisco colonna ed aumento riga ad ogni iterazione*/
+
+	int conteggio = 0;
+	for(int i = 0, j = 0; i < 3; i++, j++)
+	{
+		if(matrice[i][j] == segnoGiocatore)
+			conteggio++;
+		if(conteggio == 3)
+		{
+			ricercaObliq = 1;
+		}
+	}
+	conteggio = 0;
+	for(int i = 0, j = 2; i < 3; i++, j--)
+	{
+		if(matrice[i][j] == segnoGiocatore)
+			conteggio++;
+		if(conteggio == 3)
+		{
+			ricercaObliq = 1;
+		}
+	}
 	  
 	 return ricercaOrizz || ricercaVert || ricercaObliq;
 }
