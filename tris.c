@@ -3,10 +3,18 @@
 
 void stampaTris(int matrice[][3])
 {
+	printf("    1   2   3\n");
 	for(int i = 0; i < 3; i++)
 	{
 		for(int j = 0; j < 3; j++)
 		{
+			if(i == 0 && j == 0)
+				printf(" a ");
+			if(i == 1 && j == 0)
+				printf(" b ");
+			if(i == 2 && j == 0)
+				printf(" c ");
+			
 			if(matrice[i][j] == 1) 
 				printf(" X");
 			else if(matrice[i][j] == 2)
@@ -17,9 +25,9 @@ void stampaTris(int matrice[][3])
 				printf(" |");
 		}
 		if(i != 2)
-			printf("\n-----------\n");
+			printf("\n   -----------\n");
 	}
-	printf("\n");
+	printf("\n\n");
 }
 
 void sceltaSegno(int *segnoGiocatore1,
@@ -30,9 +38,10 @@ void sceltaSegno(int *segnoGiocatore1,
 	// inserimento del segno del player 1. Il segno del player 2 sarà quello rimanente
 	do
 	{
-		printf("Player 1 scegli il segno tra O e X: ");
+		printf("\nPlayer 1 scegli il segno tra O e X: ");
 		scanf("%c",
 			  &segno);
+		printf("\n");
 		if(segno != 'O' && segno != 'X')
 		{
 			   printf("Valore non valido. Riprova.\n");
@@ -76,6 +85,7 @@ void inserisciSegno(int matrice[][3], int player, int segnoGiocatore)
 			   player);
 		scanf("%s",
 			  posizione);
+		printf("\n");
 		letteraRiga = posizione[0];
 		colonna = atoi(&posizione[1]);
 		
