@@ -1,3 +1,9 @@
+/*
+	To do:
+	+ affrontare il caso in cui l'utente mette il segno in una posizione già occupata.
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -5,7 +11,7 @@
 	Print the matrix of signs.
 */
 
-void stampaTris(int matrice[][3])  /* input: matrix of signs */
+void print_matrix (int matrix[][3])  /* input: matrix of signs */
 {
 	printf("    1   2   3\n");
 	for(int i = 0; i < 3; i++)
@@ -19,9 +25,9 @@ void stampaTris(int matrice[][3])  /* input: matrix of signs */
 			if(i == 2 && j == 0)
 				printf(" c ");
 			
-			if(matrice[i][j] == 1) 
+			if(matrix[i][j] == 1) 
 				printf(" X");
-			else if(matrice[i][j] == 2)
+			else if(matrix[i][j] == 2)
 				printf(" O");
 			else 
 				printf("  ");
@@ -38,39 +44,40 @@ void stampaTris(int matrice[][3])  /* input: matrix of signs */
 	Choose the sign of player 1. Player 2 will have the other sign.
 */
 
-void sceltaSegno(int *segnoGiocatore1,   /* output: player 1 sign */
-				 int *segnoGiocatore2)   /* output: player 2 sign */
+void choose_signs(int *player1_sign,   /* output: player 1 sign */
+				  int *player2_sign)   /* output: player 2 sign */
 {
-	char segno;          /* input: sign chosen by player 1 */
-	int esito_lettura;   /* work:  return value from reading input with scanf */
+	char sign;          /* input: sign chosen by player 1 */
+	int input_result;   /* work:  return value from reading input with scanf */
 	
 	do
 	{
-		printf("\nPlayer 1 scegli il segno tra O e X: ");
-		esito_lettura = scanf("%c",
-			  &segno);
+		printf("\nPlayer 1 choose a sign between O and X: ");
+		input_result = scanf("%c",
+			  &sign);
 		printf("\n");
-		if((segno != 'O' && segno != 'o' && segno != 'X' && segno != 'x') ||
-			esito_lettura != 1)
+		if((sign != 'O' && sign != 'o' && sign != 'X' && sign != 'x') ||
+			input_result != 1)
 		{
-			   printf("Valore non valido. Riprova.\n");
+			   printf("Value not valid. Retry.\n");
 		}
 		else 
 		{
-			if(segno == 'O' || segno == 'o')
+			if(sign == 'O' || sign == 'o')
 			{
-				*segnoGiocatore1 = 2;
-				*segnoGiocatore2 = 1;
+				*player1_sign = 2;
+				*player2_sign = 1;
 			}
-			else if(segno == 'X' || segno == 'x')
+			else if(sign == 'X' || sign == 'x')
 			{
-				*segnoGiocatore1 = 1;
-				*segnoGiocatore2 = 2;
+				*player1_sign = 1;
+				*player2_sign = 2;
 			}
 		}
 		while(getchar() != '\n');
 	}
-	while(segno != 'O' && segno != 'o' && segno != 'X' && segno != 'x');
+	while((sign != 'O' && sign != 'o' && sign != 'X' && sign != 'x') ||
+		   input_result != 1);
 }
 
 /* 
@@ -83,166 +90,165 @@ void sceltaSegno(int *segnoGiocatore1,   /* output: player 1 sign */
 	The player must write a string of 2 characters (letter a-c and number 1-3) that represent the coordinates. 
 */
 
-void inserisciSegno(int matrice[][3],     /* output: matrix of signs */
-					int player, 		  /* input: current player */	
-					int segnoGiocatore)   /* input: current player sign */
+void add_sign(int matrix[][3],      /* output: matrix of signs */
+			  int player, 		    /* input: current player */	
+			  int player_sign)      /* input: current player sign */
 {
-	char posizione[10];    /* input: string containing the coordinates (a-c)(1-3) */
-	char letteraRiga;      /* work:  character representing the row */
-	int  riga = -1;		   /* work:  index of row */	
-	int  indiceColonna;    /* work:  number representing the column */
-	int  colonna = -1;     /* work:  index of column */
-	int  esito_lettura;    /* work:  return value from reading input with scanf */
+	char position[10];    /* input: string containing the coordinates (a-c)(1-3) */
+	char row_letter;      /* work:  character representing the row */
+	int  row = -1;		  /* work:  index of row */	
+	int  column_index;    /* work:  number representing the column */
+	int  column = -1;     /* work:  index of column */
+	int  input_result;    /* work:  return value from reading input with scanf */
 
 		do
 		{
-			printf("Player %d scegli la posizione del prossimo segno: ",
+			printf("Player %d choose the next position: ",
 				   player);
-			esito_lettura = scanf("%s",
-				  posizione);
+			input_result = scanf("%s",
+				  position);
 			printf("\n");
-			letteraRiga = posizione[0];
-			indiceColonna = atoi(&posizione[1]);
-			switch(letteraRiga)
+			row_letter = position[0];
+			column_index = atoi(&position[1]);
+			switch(row_letter)
 			{
 				case 'a':
-					riga = 0;
+					row = 0;
 					break;
 				case 'b':
-					riga = 1;
+					row = 1;
 					break;
 				case 'c':
-					riga = 2;
+					row = 2;
 					break;
 			}
-			switch(indiceColonna)
+			switch(column_index)
 			{
 				case 1:
-					colonna = 0;
+					column = 0;
 					break;
 				case 2:
-					colonna = 1;
+					column = 1;
 					break;
 				case 3:
-					colonna = 2;
+					column = 2;
 					break;
 			}		
-			if((riga == -1 || colonna == -1) || esito_lettura != 1)
+			if((row == -1 || column == -1) || input_result != 1)
 			{
-				printf("Posizione non valida. Riprova.\n\n");
+				printf("Position not valid. Retry.\n\n");
 			}
 			while(getchar() != '\n');
 		}
-		while((riga == -1 || colonna == -1) || esito_lettura != 1);
-		printf("Riga: %d, colonna: %d\n", riga, colonna);
-		matrice[riga][colonna] = segnoGiocatore;
+		while((row == -1 || column == -1) || input_result != 1);
+		matrix[row][column] = player_sign;
 }
 
 // For a given sign, search a sequence of 3 consecutive positions containing the sign. 
 
-int cercaTripletta(int matrice[][3],    /* input: matrix of signs */
-				   int segnoGiocatore)  /* input: currenct player sign */
+int search_sequence(int matrix[][3],    /* input: matrix of signs */
+				   int player_sign)  /* input: currenct player sign */
 {
-	int ricercaOrizz = 0;   /* output: sequence found horizontaly */
-	int ricercaVert = 0;    /* output: sequence found vertically */
-	int ricercaObliq = 0;   /* output: sequence found diagonally */
+	int horizontal_search = 0;   /* output: sequence found horizontaly */
+	int vertical_search = 0;     /* output: sequence found vertically */
+	int diagonal_search = 0;     /* output: sequence found diagonally */
 	
 	/* search horizontaly: iterate elements one row at a time. */
 	
 	for(int i = 0; i < 3; i++)
 	{
-		int conteggio = 0;
+		int count = 0;
 		for(int j = 0; j < 3; j++)
 		{
-			if(matrice[i][j] == segnoGiocatore)
-				conteggio++;
+			if(matrix[i][j] == player_sign)
+				count++;
 		}
-		if(conteggio == 3)
+		if(count == 3)
 		{
-			ricercaOrizz = 1;
+			horizontal_search = 1;
 		}
 		else 
-			conteggio = 0;
+			count = 0;
 	}
 	
     /* search vertically: iterate elements one column at a time. */
 	
 	for(int i = 0; i < 3; i++)
 	{
-		int conteggio = 0;
+		int count = 0;
 		for(int j = 0; j < 3; j++)
 		{
-			if(matrice[j][i] == segnoGiocatore)
-				conteggio++;
+			if(matrix[j][i] == player_sign)
+				count++;
 		}
-		if(conteggio == 3)
+		if(count == 3)
 		{
-			ricercaVert = 1;
+			vertical_search = 1;
 		}
 		else 
-			conteggio = 0;
+			count = 0;
 	}
 	
     /* search diagonally: (1) iterate 3 times and for each iteration add one to both row and column.
 					      (2) iterate 3 times, starting from row 0, column 2, and for each iteration 
 						      subtract one to column and add one to row. */
 
-	int conteggio = 0;
+	int count = 0;
 	for(int i = 0, j = 0; i < 3; i++, j++)
 	{
-		if(matrice[i][j] == segnoGiocatore)
-			conteggio++;
-		if(conteggio == 3)
+		if(matrix[i][j] == player_sign)
+			count++;
+		if(count == 3)
 		{
-			ricercaObliq = 1;
+			diagonal_search = 1;
 		}
 	}
-	conteggio = 0;
+	count = 0;
 	for(int i = 0, j = 2; i < 3; i++, j--)
 	{
-		if(matrice[i][j] == segnoGiocatore)
-			conteggio++;
-		if(conteggio == 3)
+		if(matrix[i][j] == player_sign)
+			count++;
+		if(count == 3)
 		{
-			ricercaObliq = 1;
+			diagonal_search = 1;
 		}
 	}
 	  
-	 return ricercaOrizz || ricercaVert || ricercaObliq;
+	 return horizontal_search || vertical_search || diagonal_search;
 }
 
 int main(void)
 {
-	int segnoGiocatore1;         /* input: sign associated to player 1 */
-	int segnoGiocatore2;		 /* input: sign associated to playe 2 */
-	int playerCorrente = 1;      /* work:  current player. 1 is player one, 2 is player two. Player 1 begins. */
-	int segnoGiocatoreCorrente;  /* work:  current player sign. */
-	int vittoria = 0;			 /* work:  boolean variable for victory. */
-	int segni[3][3];  			 /* output: matrix of signs */
+	int player1_sign;         /* input: sign associated to player 1 */
+	int player2_sign;		 /* input: sign associated to playe 2 */
+	int current_player = 1;      /* work:  current player. 1 is player one, 2 is player two. Player 1 begins. */
+	int current_player_sign;  /* work:  current player sign. */
+	int victory = 0;			 /* work:  boolean variable for victory. */
+	int signs[3][3];  			 /* output: matrix of signs */
 		
-	sceltaSegno(&segnoGiocatore1, 
-				&segnoGiocatore2);
-	segnoGiocatoreCorrente = segnoGiocatore1;
-	stampaTris(segni);
+	choose_signs(&player1_sign, 
+				&player2_sign);
+	current_player_sign = player1_sign;
+	print_matrix(signs);
 		   
-	while(!vittoria)
+	while(!victory)
 	{
-		inserisciSegno(segni, playerCorrente ,segnoGiocatoreCorrente);
-		stampaTris(segni);
-		vittoria = cercaTripletta(segni, segnoGiocatoreCorrente);
-		if(vittoria) 
+		add_sign(signs, current_player ,current_player_sign);
+		print_matrix(signs);
+		victory = search_sequence(signs, current_player_sign);
+		if(victory) 
 		{
-			printf("Player%d ha vinto.", playerCorrente);
+			printf("Player%d ha vinto.", current_player);
 		}
-		if(playerCorrente == 1)
+		if(current_player == 1)
 		{
-			playerCorrente = 2;
-			segnoGiocatoreCorrente = segnoGiocatore2;
+			current_player = 2;
+			current_player_sign = player2_sign;
 		}
 		else 
 		{
-			playerCorrente = 1;
-			segnoGiocatoreCorrente = segnoGiocatore1;
+			current_player = 1;
+			current_player_sign = player1_sign;
 		}
 	}
 	return (0);
