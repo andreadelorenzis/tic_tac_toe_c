@@ -34,26 +34,28 @@ void sceltaSegno(int *segnoGiocatore1,
 				 int *segnoGiocatore2)
 {
 	char segno;
+	int esito_lettura;
 	
 	// inserimento del segno del player 1. Il segno del player 2 sarà quello rimanente
 	do
 	{
 		printf("\nPlayer 1 scegli il segno tra O e X: ");
-		scanf("%c",
+		esito_lettura = scanf("%c",
 			  &segno);
 		printf("\n");
-		if(segno != 'O' && segno != 'X')
+		if((segno != 'O' && segno != 'o' && segno != 'X' && segno != 'x') ||
+			esito_lettura != 1)
 		{
 			   printf("Valore non valido. Riprova.\n");
 		}
 		else 
 		{
-			if(segno == 'O')
+			if(segno == 'O' || segno == 'o')
 			{
 				*segnoGiocatore1 = 2;
 				*segnoGiocatore2 = 1;
 			}
-			else if(segno == 'X')
+			else if(segno == 'X' || segno == 'x')
 			{
 				*segnoGiocatore1 = 1;
 				*segnoGiocatore2 = 2;
@@ -61,7 +63,7 @@ void sceltaSegno(int *segnoGiocatore1,
 		}
 		while(getchar() != '\n');
 	}
-	while(segno != 'O' && segno != 'X');
+	while(segno != 'O' && segno != 'o' && segno != 'X' && segno != 'x');
 }
 
 /* il player inserisce la posizione, e il segno scelto a inizio partita verrà messo in quella posizione. 
@@ -78,42 +80,52 @@ void inserisciSegno(int matrice[][3], int player, int segnoGiocatore)
 {
 	char posizione[10];
 	char letteraRiga;
-	int riga;
-	int colonna;
+	int  riga = -1;
+	int  indiceColonna;
+	int  colonna = -1;
+	int  esito_lettura;
 
-		printf("Player %d scegli la posizione del prossimo segno: ",
-			   player);
-		scanf("%s",
-			  posizione);
-		printf("\n");
-		letteraRiga = posizione[0];
-		colonna = atoi(&posizione[1]);
-		
-		switch(letteraRiga)
+		do
 		{
-			case 'a':
-				riga = 0;
-				break;
-			case 'b':
-				riga = 1;
-				break;
-			case 'c':
-				riga = 2;
-				break;
+			printf("Player %d scegli la posizione del prossimo segno: ",
+				   player);
+			esito_lettura = scanf("%s",
+				  posizione);
+			printf("\n");
+			letteraRiga = posizione[0];
+			indiceColonna = atoi(&posizione[1]);
+			switch(letteraRiga)
+			{
+				case 'a':
+					riga = 0;
+					break;
+				case 'b':
+					riga = 1;
+					break;
+				case 'c':
+					riga = 2;
+					break;
+			}
+			switch(indiceColonna)
+			{
+				case 1:
+					colonna = 0;
+					break;
+				case 2:
+					colonna = 1;
+					break;
+				case 3:
+					colonna = 2;
+					break;
+			}		
+			if((riga == -1 || colonna == -1) || esito_lettura != 1)
+			{
+				printf("Posizione non valida. Riprova.\n\n");
+			}
+			while(getchar() != '\n');
 		}
-		switch(colonna)
-		{
-			case 1:
-				colonna = 0;
-				break;
-			case 2:
-				colonna = 1;
-				break;
-			case 3:
-				colonna = 2;
-				break;
-		}
-				
+		while((riga == -1 || colonna == -1) || esito_lettura != 1);
+		printf("Riga: %d, colonna: %d\n", riga, colonna);
 		matrice[riga][colonna] = segnoGiocatore;
 }
 
