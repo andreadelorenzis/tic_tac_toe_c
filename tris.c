@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void stampaTris(int matrice[][3])
+/*
+	Print the matrix of signs.
+*/
+
+void stampaTris(int matrice[][3])  /* input: matrix of signs */
 {
 	printf("    1   2   3\n");
 	for(int i = 0; i < 3; i++)
@@ -30,13 +34,16 @@ void stampaTris(int matrice[][3])
 	printf("\n\n");
 }
 
-void sceltaSegno(int *segnoGiocatore1,
-				 int *segnoGiocatore2)
+/*
+	Choose the sign of player 1. Player 2 will have the other sign.
+*/
+
+void sceltaSegno(int *segnoGiocatore1,   /* output: player 1 sign */
+				 int *segnoGiocatore2)   /* output: player 2 sign */
 {
-	char segno;
-	int esito_lettura;
+	char segno;          /* input: sign chosen by player 1 */
+	int esito_lettura;   /* work:  return value from reading input with scanf */
 	
-	// inserimento del segno del player 1. Il segno del player 2 sarà quello rimanente
 	do
 	{
 		printf("\nPlayer 1 scegli il segno tra O e X: ");
@@ -66,24 +73,26 @@ void sceltaSegno(int *segnoGiocatore1,
 	while(segno != 'O' && segno != 'o' && segno != 'X' && segno != 'x');
 }
 
-/* il player inserisce la posizione, e il segno scelto a inizio partita verrà messo in quella posizione. 
-
-Questo è il sistema posizionale, e il player corrente deve mettere una stringa di 2 caratteri contenenti una lettera A-C e un numero 1-3, senza spazi in mezzo. 
-  1 2 3
-A 0 X 0
-B X 0 X
-C 0 X 0
-
+/* 
+	The current player chooses the position in which his sign will be placed. 
+	This is the positional system:
+	  1 2 3
+	A 0 X 0
+	B X 0 X
+	C 0 X 0
+	The player must write a string of 2 characters (letter a-c and number 1-3) that represent the coordinates. 
 */
 
-void inserisciSegno(int matrice[][3], int player, int segnoGiocatore)
+void inserisciSegno(int matrice[][3],     /* output: matrix of signs */
+					int player, 		  /* input: current player */	
+					int segnoGiocatore)   /* input: current player sign */
 {
-	char posizione[10];
-	char letteraRiga;
-	int  riga = -1;
-	int  indiceColonna;
-	int  colonna = -1;
-	int  esito_lettura;
+	char posizione[10];    /* input: string containing the coordinates (a-c)(1-3) */
+	char letteraRiga;      /* work:  character representing the row */
+	int  riga = -1;		   /* work:  index of row */	
+	int  indiceColonna;    /* work:  number representing the column */
+	int  colonna = -1;     /* work:  index of column */
+	int  esito_lettura;    /* work:  return value from reading input with scanf */
 
 		do
 		{
@@ -129,15 +138,16 @@ void inserisciSegno(int matrice[][3], int player, int segnoGiocatore)
 		matrice[riga][colonna] = segnoGiocatore;
 }
 
-// cerca un segno in 3 posizioni consecutive, nelle 3 direzioni possibili
+// For a given sign, search a sequence of 3 consecutive positions containing the sign. 
 
-int cercaTripletta(int matrice[][3], int segnoGiocatore)
+int cercaTripletta(int matrice[][3],    /* input: matrix of signs */
+				   int segnoGiocatore)  /* input: currenct player sign */
 {
-	int ricercaOrizz = 0;
-	int ricercaVert = 0;
-	int ricercaObliq = 0;
+	int ricercaOrizz = 0;   /* output: sequence found horizontaly */
+	int ricercaVert = 0;    /* output: sequence found vertically */
+	int ricercaObliq = 0;   /* output: sequence found diagonally */
 	
-	/*cercaOrizzontale: itero riga per riga*/
+	/* search horizontaly: iterate elements one row at a time. */
 	
 	for(int i = 0; i < 3; i++)
 	{
@@ -155,7 +165,7 @@ int cercaTripletta(int matrice[][3], int segnoGiocatore)
 			conteggio = 0;
 	}
 	
-    /*cercaVerticale: itero colonna per colonna*/
+    /* search vertically: iterate elements one column at a time. */
 	
 	for(int i = 0; i < 3; i++)
 	{
@@ -173,8 +183,9 @@ int cercaTripletta(int matrice[][3], int segnoGiocatore)
 			conteggio = 0;
 	}
 	
-    /*cercaObliquo: itero 3 volte aumentando contemporaneamente riga e colonna
-					itero 3 volte partendo da colonna = 3, riga = 0, e diminuisco colonna ed aumento riga ad ogni iterazione*/
+    /* search diagonally: (1) iterate 3 times and for each iteration add one to both row and column.
+					      (2) iterate 3 times, starting from row 0, column 2, and for each iteration 
+						      subtract one to column and add one to row. */
 
 	int conteggio = 0;
 	for(int i = 0, j = 0; i < 3; i++, j++)
@@ -200,15 +211,14 @@ int cercaTripletta(int matrice[][3], int segnoGiocatore)
 	 return ricercaOrizz || ricercaVert || ricercaObliq;
 }
 
-//O = 2, X = 1
 int main(void)
 {
-	int playerCorrente = 1;
-	int segnoGiocatoreCorrente;
-	int segnoGiocatore1;
-	int segnoGiocatore2;
-	int vittoria = 0;
-	int segni[3][3];
+	int segnoGiocatore1;         /* input: sign associated to player 1 */
+	int segnoGiocatore2;		 /* input: sign associated to playe 2 */
+	int playerCorrente = 1;      /* work:  current player. 1 is player one, 2 is player two. Player 1 begins. */
+	int segnoGiocatoreCorrente;  /* work:  current player sign. */
+	int vittoria = 0;			 /* work:  boolean variable for victory. */
+	int segni[3][3];  			 /* output: matrix of signs */
 		
 	sceltaSegno(&segnoGiocatore1, 
 				&segnoGiocatore2);
